@@ -4,10 +4,7 @@
  */
 package jframes;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.sql.ResultSet;
 
 import javax.swing.SpinnerDateModel;
 import java.util.Date;
@@ -17,6 +14,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 import jFrames.Conexion;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author jovan
@@ -31,6 +29,7 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         dateTimeSpinner.setModel(new SpinnerDateModel());
         dateTimeSpinner.setEditor(new javax.swing.JSpinner.DateEditor(dateTimeSpinner, "dd-MM-yyyy"));
+        cargarInventarios();
     }
 
     /**
@@ -67,7 +66,8 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         txtArea = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        btnAgregar = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblInventario = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -76,16 +76,21 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(204, 255, 255));
 
-        btnInsertArea.setText("Insert");
+        btnInsertArea.setText("Insertar");
         btnInsertArea.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnInsertAreaActionPerformed(evt);
             }
         });
 
-        btnUpdateArea.setText("Update");
+        btnUpdateArea.setText("Actualizar");
 
-        btnDeleteArea.setText("delete");
+        btnDeleteArea.setText("Borrar");
+        btnDeleteArea.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteAreaActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Area");
 
@@ -103,7 +108,7 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnDeleteArea))
                     .addComponent(jLabel1))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -118,7 +123,7 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
                 .addGap(24, 24, 24))
         );
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 50, 260, 90));
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 50, 340, 90));
 
         jLabel2.setText("Menu");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 20, -1, -1));
@@ -165,23 +170,75 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
         jLabel10.setText("Id de area");
         jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 390, -1, 10));
 
-        btnAgregar.setText("Agregar");
-        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAgregarActionPerformed(evt);
+        tblInventario.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
             }
-        });
-        jPanel1.add(btnAgregar, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 550, -1, -1));
+        ));
+        jScrollPane3.setViewportView(tblInventario);
+
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 460, 580, 240));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 800));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnAgregarActionPerformed
+    private void cargarInventarios() {
+        Conexion conexion = new Conexion();
+        Connection cx = conexion.conectar();
+        if (cx == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
+            return;
+        }
 
+        try {
+            String sql = "SELECT * FROM Inventario";
+            PreparedStatement ps = cx.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            DefaultTableModel modelo = new DefaultTableModel();
+            modelo.addColumn("ID");
+            modelo.addColumn("Nombre");
+            modelo.addColumn("Descripcion");
+            modelo.addColumn("Serie");
+            modelo.addColumn("Color");
+            modelo.addColumn("Fecha Adquisicion");
+            modelo.addColumn("Tipo Adquisicion");
+            modelo.addColumn("Observaciones");
+            modelo.addColumn("ID Area");
+
+            while (rs.next()) {
+                Object[] fila = new Object[9];
+                fila[0] = rs.getInt("id");
+                fila[1] = rs.getString("nombrecorto");
+                fila[2] = rs.getString("descripcion");
+                fila[3] = rs.getString("serie");
+                fila[4] = rs.getString("color");
+                fila[5] = rs.getDate("fechaAdquisision");
+                fila[6] = rs.getString("tipoAdquisision");
+                fila[7] = rs.getString("observaciones");
+                fila[8] = rs.getInt("areas_id");
+                modelo.addRow(fila);
+            }
+            tblInventario.setModel(modelo);
+
+            rs.close();
+            ps.close();
+            cx.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this, "Error SQL: " + e.getMessage());
+        }
+    }
+    
+    
     private void btnInsertAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertAreaActionPerformed
         Conexion conexion = new Conexion();
         Connection cx = conexion.conectar();
@@ -197,7 +254,12 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
             Date fechaAdquisicion = (Date) dateTimeSpinner.getValue();
             String tipoAdquisicion = txtTipoAdquisision.getText();
             String observaciones = txtObservaciones.getText();
-            int idArea = Integer.parseInt(txtArea.getText());
+            String areaText = txtArea.getText();
+            if (!areaText.matches("\\d+")) {
+                javax.swing.JOptionPane.showMessageDialog(this, "El campo 'Id de area' debe contener solo números.");
+                return;
+            }
+            int idArea = Integer.parseInt(areaText); 
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String fechaFormateada = sdf.format(fechaAdquisicion);
@@ -235,8 +297,45 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
             javax.swing.JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
         
-        
+        cargarInventarios(),
     }//GEN-LAST:event_btnInsertAreaActionPerformed
+
+    private void btnDeleteAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteAreaActionPerformed
+        int filaSeleccionada = tblInventario.getSelectedRow();
+
+        if (filaSeleccionada == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Por favor, selecciona un inventario para eliminar.");
+            return;
+        }
+        int idInventario = (int) tblInventario.getValueAt(filaSeleccionada, 0);  // ID está en la primera columna
+
+        Conexion conexion = new Conexion();
+        Connection cx = conexion.conectar();
+        if (cx == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
+            return;
+        }
+
+        try {
+            String sql = "DELETE FROM Inventario WHERE id = ?";
+            PreparedStatement ps = cx.prepareStatement(sql);
+            ps.setInt(1, idInventario);
+
+            int filasEliminadas = ps.executeUpdate();
+            if (filasEliminadas > 0) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Inventario eliminado correctamente.");
+                cargarInventarios();
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "No se pudo eliminar el inventario.");
+            }
+            ps.close();
+            cx.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this, "Error SQL: " + e.getMessage());
+        }
+        cargarInventarios();
+    }//GEN-LAST:event_btnDeleteAreaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -274,7 +373,6 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnDeleteArea;
     private javax.swing.JButton btnInsertArea;
     private javax.swing.JButton btnUpdateArea;
@@ -293,6 +391,8 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable tblInventario;
     private javax.swing.JTextField tfNombre;
     private javax.swing.JTextField txtArea;
     private javax.swing.JTextField txtColor;
