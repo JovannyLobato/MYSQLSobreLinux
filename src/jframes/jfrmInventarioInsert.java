@@ -4,6 +4,11 @@
  */
 package jframes;
 
+import javax.swing.SpinnerDateModel;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import modelos.modInventario.modInventario;
+
 /**
  *
  * @author jovan
@@ -16,6 +21,8 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
     public jfrmInventarioInsert() {
         initComponents();
         this.setLocationRelativeTo(null);
+        dateTimeSpinner.setModel(new SpinnerDateModel());
+        dateTimeSpinner.setEditor(new javax.swing.JSpinner.DateEditor(dateTimeSpinner, "dd-MM-yyyy"));
     }
 
     /**
@@ -34,6 +41,25 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
         btnDeleteArea = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        tfNombre = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtDescripcion = new javax.swing.JTextArea();
+        txtSerie = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        txtColor = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        dateTimeSpinner = new javax.swing.JSpinner();
+        txtTipoAdquisision = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtObservaciones = new javax.swing.JTextArea();
+        jLabel9 = new javax.swing.JLabel();
+        txtArea = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        btnAgregar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -43,6 +69,11 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(204, 255, 255));
 
         btnInsertArea.setText("Insert");
+        btnInsertArea.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInsertAreaActionPerformed(evt);
+            }
+        });
 
         btnUpdateArea.setText("Update");
 
@@ -84,10 +115,81 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
         jLabel2.setText("Menu");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 20, -1, -1));
 
+        jLabel3.setText("Nombre");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 190, -1, -1));
+        jPanel1.add(tfNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 210, 120, -1));
+
+        jLabel4.setText("Descripcion");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 260, -1, -1));
+
+        txtDescripcion.setColumns(20);
+        txtDescripcion.setRows(5);
+        jScrollPane1.setViewportView(txtDescripcion);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 290, -1, -1));
+        jPanel1.add(txtSerie, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 410, 120, -1));
+
+        jLabel5.setText("Serie");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 390, -1, -1));
+        jPanel1.add(txtColor, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 480, 120, -1));
+
+        jLabel6.setText("Color");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 460, -1, -1));
+
+        jLabel7.setText("FechaAdquisision");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 530, -1, -1));
+        jPanel1.add(dateTimeSpinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 560, -1, -1));
+        jPanel1.add(txtTipoAdquisision, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 620, 120, -1));
+
+        jLabel8.setText("Tipo de adquisision");
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 600, -1, -1));
+
+        txtObservaciones.setColumns(20);
+        txtObservaciones.setRows(5);
+        jScrollPane2.setViewportView(txtObservaciones);
+
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 290, -1, -1));
+
+        jLabel9.setText("Observaciones");
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 260, -1, -1));
+        jPanel1.add(txtArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 410, 120, 20));
+
+        jLabel10.setText("Id de area");
+        jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 390, -1, 10));
+
+        btnAgregar.setText("Agregar");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnAgregar, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 550, -1, -1));
+
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 800));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnInsertAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertAreaActionPerformed
+        String nombre = tfNombre.getText();
+        String descripcion = txtDescripcion.getText();
+        String serie = txtSerie.getText();
+        String color = txtColor.getText();
+        Date fechaAdquisicion = (Date) dateTimeSpinner.getValue();
+        String tipoAdquisicion = txtTipoAdquisision.getText();
+        String observaciones = txtObservaciones.getText();
+        int idArea = Integer.parseInt(txtArea.getText());
+        
+        modInventario nuevoInventario = new modInventario(
+            nombre, descripcion, serie, color, fechaAdquisicion, tipoAdquisicion, observaciones, idArea
+        );
+        
+        
+    }//GEN-LAST:event_btnInsertAreaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -125,12 +227,31 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnDeleteArea;
     private javax.swing.JButton btnInsertArea;
     private javax.swing.JButton btnUpdateArea;
+    private javax.swing.JSpinner dateTimeSpinner;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField tfNombre;
+    private javax.swing.JTextField txtArea;
+    private javax.swing.JTextField txtColor;
+    private javax.swing.JTextArea txtDescripcion;
+    private javax.swing.JTextArea txtObservaciones;
+    private javax.swing.JTextField txtSerie;
+    private javax.swing.JTextField txtTipoAdquisision;
     // End of variables declaration//GEN-END:variables
 }
