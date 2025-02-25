@@ -75,9 +75,7 @@ public class modInventario {
         return color;
     }
 
-    public String getFechaAdquisision() {
-        return fechaAdquisision;
-    }
+
 
     public int getArea_id() {
         return area_id;
@@ -103,9 +101,6 @@ public class modInventario {
         this.color = color;
     }
 
-    public void setFechaAdquisision(String fechaAdquisision) {
-        this.fechaAdquisision = fechaAdquisision;
-    }
 
     public void setArea_id(int area_id) {
         this.area_id = area_id;

@@ -3,12 +3,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package jframes;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.SpinnerDateModel;
 import java.util.Date;
-import java.text.SimpleDateFormat;
 import modelos.modInventario.modInventario;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 
+import jFrames.Conexion;
 /**
  *
  * @author jovan
@@ -175,18 +183,57 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnInsertAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertAreaActionPerformed
-        String nombre = tfNombre.getText();
-        String descripcion = txtDescripcion.getText();
-        String serie = txtSerie.getText();
-        String color = txtColor.getText();
-        Date fechaAdquisicion = (Date) dateTimeSpinner.getValue();
-        String tipoAdquisicion = txtTipoAdquisision.getText();
-        String observaciones = txtObservaciones.getText();
-        int idArea = Integer.parseInt(txtArea.getText());
-        
-        modInventario nuevoInventario = new modInventario(
-            nombre, descripcion, serie, color, fechaAdquisicion, tipoAdquisicion, observaciones, idArea
-        );
+        Conexion conexion = new Conexion();
+        Connection cx = conexion.conectar();
+        if (cx == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
+            return;
+        }
+        try{
+            String nombre = tfNombre.getText();
+            String descripcion = txtDescripcion.getText();
+            String serie = txtSerie.getText();
+            String color = txtColor.getText();
+            Date fechaAdquisicion = (Date) dateTimeSpinner.getValue();
+            String tipoAdquisicion = txtTipoAdquisision.getText();
+            String observaciones = txtObservaciones.getText();
+            int idArea = Integer.parseInt(txtArea.getText());
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String fechaFormateada = sdf.format(fechaAdquisicion);
+
+            modInventario nuevoInventario = new modInventario(
+                nombre, descripcion, serie, color, fechaAdquisicion, tipoAdquisicion, observaciones, idArea
+            );
+
+            String sql = "INSERT INTO Inventario (nombrecorto, descripcion, serie, color, fechaAdquisision, tipoAdquisision, observaciones, areas_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement ps = cx.prepareStatement(sql);
+            ps.setString(1, nuevoInventario.getNombreCorto());
+            ps.setString(2, nuevoInventario.getDescripcion());
+            ps.setString(3, nuevoInventario.getSerie());
+            ps.setString(4, nuevoInventario.getColor());
+            ps.setString(5, fechaFormateada);
+            ps.setString(6, nuevoInventario.getTipoAdquisision());
+            ps.setString(7, nuevoInventario.getObservaciones());
+            ps.setInt(8, nuevoInventario.getArea_id());
+
+            int filasInsertadas = ps.executeUpdate();
+            if (filasInsertadas > 0) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Registro agregado correctamente.");
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Error al agregar el registro.");
+            }
+
+            ps.close();
+            cx.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this, "Error SQL: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
         
         
     }//GEN-LAST:event_btnInsertAreaActionPerformed
