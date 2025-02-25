@@ -84,6 +84,11 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
         });
 
         btnUpdateArea.setText("Actualizar");
+        btnUpdateArea.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateAreaActionPerformed(evt);
+            }
+        });
 
         btnDeleteArea.setText("Borrar");
         btnDeleteArea.addActionListener(new java.awt.event.ActionListener() {
@@ -181,6 +186,11 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblInventario.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblInventarioMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(tblInventario);
 
         jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 460, 580, 240));
@@ -336,6 +346,88 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
         }
         cargarInventarios();
     }//GEN-LAST:event_btnDeleteAreaActionPerformed
+
+    
+
+    private void btnUpdateAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateAreaActionPerformed
+        String nombre = tfNombre.getText();
+        String descripcion = txtDescripcion.getText();
+        String serie = txtSerie.getText();
+        String color = txtColor.getText();
+        Date fechaAdquisicion = (Date) dateTimeSpinner.getValue();
+        String tipoAdquisicion = txtTipoAdquisision.getText();
+        String observaciones = txtObservaciones.getText();
+        String areaText = txtArea.getText();
+
+        if (!areaText.matches("\\d+")) {
+            javax.swing.JOptionPane.showMessageDialog(this, "El campo 'Id de area' debe contener solo números.");
+            return;
+        }
+        int idArea = Integer.parseInt(areaText); 
+
+        Conexion conexion = new Conexion();
+        Connection cx = conexion.conectar();
+        if (cx == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
+            return;
+        }
+
+        try {
+            int idInventario = (int) tblInventario.getValueAt(tblInventario.getSelectedRow(), 0);
+
+            String sql = "UPDATE Inventario SET nombrecorto = ?, descripcion = ?, serie = ?, color = ?, fechaAdquisision = ?, tipoAdquisision = ?, observaciones = ?, areas_id = ? WHERE id = ?";
+            PreparedStatement ps = cx.prepareStatement(sql);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String fechaFormateada = sdf.format(fechaAdquisicion);
+
+            ps.setString(1, nombre);
+            ps.setString(2, descripcion);
+            ps.setString(3, serie);
+            ps.setString(4, color);
+            ps.setString(5, fechaFormateada);
+            ps.setString(6, tipoAdquisicion);
+            ps.setString(7, observaciones);
+            ps.setInt(8, idArea);
+            ps.setInt(9, idInventario);
+            int filasActualizadas = ps.executeUpdate();
+            if (filasActualizadas > 0) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Inventario actualizado correctamente.");
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "No se pudo actualizar el inventario.");
+            }
+
+            ps.close();
+            cx.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this, "Error SQL: " + e.getMessage());
+        }
+        cargarInventarios();   
+    }//GEN-LAST:event_btnUpdateAreaActionPerformed
+
+    private void tblInventarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblInventarioMouseClicked
+        int filaSeleccionada = tblInventario.getSelectedRow();
+  
+        if (filaSeleccionada != -1) {
+            String nombre = tblInventario.getValueAt(filaSeleccionada, 1).toString();
+            String descripcion = tblInventario.getValueAt(filaSeleccionada, 2).toString();
+            String serie = tblInventario.getValueAt(filaSeleccionada, 3).toString();
+            String color = tblInventario.getValueAt(filaSeleccionada, 4).toString();
+            Date fechaAdquisicion = (Date) tblInventario.getValueAt(filaSeleccionada, 5);
+            String tipoAdquisicion = tblInventario.getValueAt(filaSeleccionada, 6).toString();
+            String observaciones = tblInventario.getValueAt(filaSeleccionada, 7).toString();
+            String area = tblInventario.getValueAt(filaSeleccionada, 8).toString();
+            
+            tfNombre.setText(nombre);
+            txtDescripcion.setText(descripcion);
+            txtSerie.setText(serie);
+            txtColor.setText(color);
+            dateTimeSpinner.setValue(fechaAdquisicion);
+            txtTipoAdquisision.setText(tipoAdquisicion);
+            txtObservaciones.setText(observaciones);
+            txtArea.setText(area);
+        }
+    }//GEN-LAST:event_tblInventarioMouseClicked
 
     /**
      * @param args the command line arguments
