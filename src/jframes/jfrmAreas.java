@@ -24,8 +24,9 @@ public class jfrmAreas extends javax.swing.JFrame {
      * Creates new form jfrmAreas
      */
     public jfrmAreas() {
-        cargarAreas();
+        
         initComponents();
+        cargarAreas();
     }
 
     /**
@@ -50,6 +51,7 @@ public class jfrmAreas extends javax.swing.JFrame {
         tblAreas = new javax.swing.JTable();
         txtNombre = new javax.swing.JTextField();
         txtUbicación = new javax.swing.JTextField();
+        btnInventario = new javax.swing.JButton();
 
         jTextField1.setText("jTextField1");
 
@@ -126,7 +128,19 @@ public class jfrmAreas extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblAreas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblAreasMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblAreas);
+
+        btnInventario.setText("Inventario");
+        btnInventario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInventarioActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -137,16 +151,20 @@ public class jfrmAreas extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(67, 67, 67)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(167, 167, 167)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4)
-                                    .addComponent(txtUbicación, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnInventario))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel3)
+                                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(167, 167, 167)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel4)
+                                        .addComponent(txtUbicación, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(89, 89, 89)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -158,7 +176,9 @@ public class jfrmAreas extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addComponent(jLabel1)
                 .addGap(30, 30, 30)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnInventario))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -215,6 +235,13 @@ public class jfrmAreas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnInsertAreaActionPerformed
 
     private void btnUpdateAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateAreaActionPerformed
+        int filaSeleccionada = tblAreas.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Seleccione un área de la tabla para actualizar.");
+            return;
+        }
+
+        int idArea = (int) tblAreas.getValueAt(filaSeleccionada, 0);
         String nombre = txtNombre.getText();
         String ubicacion = txtUbicación.getText();
 
@@ -226,19 +253,17 @@ public class jfrmAreas extends javax.swing.JFrame {
         }
 
         try {
-            int idArea = (int) tblAreas.getValueAt(tblAreas.getSelectedRow(), 0);
-
-            String sql = "UPDATE Area SET nombre = ?, ubicacion = ? WHERE id = ?";
+            String sql = "UPDATE Areas SET nombre = ?, ubicacion = ? WHERE id = ?";
             PreparedStatement ps = cx.prepareStatement(sql);
-
             ps.setString(1, nombre);
             ps.setString(2, ubicacion);
             ps.setInt(3, idArea);
+
             int filasActualizadas = ps.executeUpdate();
             if (filasActualizadas > 0) {
-                javax.swing.JOptionPane.showMessageDialog(this, "Inventario actualizado correctamente.");
+                javax.swing.JOptionPane.showMessageDialog(this, "Área actualizada correctamente.");
             } else {
-                javax.swing.JOptionPane.showMessageDialog(this, "No se pudo actualizar el inventario.");
+                javax.swing.JOptionPane.showMessageDialog(this, "No se pudo actualizar el área.");
             }
 
             ps.close();
@@ -247,7 +272,8 @@ public class jfrmAreas extends javax.swing.JFrame {
             e.printStackTrace();
             javax.swing.JOptionPane.showMessageDialog(this, "Error SQL: " + e.getMessage());
         }
-        cargarAreas();
+
+        cargarAreas(); // Recargar la tabla para reflejar los cambios
     }//GEN-LAST:event_btnUpdateAreaActionPerformed
 
     private void btnDeleteAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteAreaActionPerformed
@@ -286,6 +312,23 @@ public class jfrmAreas extends javax.swing.JFrame {
         }
         cargarAreas();
     }//GEN-LAST:event_btnDeleteAreaActionPerformed
+
+    private void tblAreasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblAreasMouseClicked
+        int filaSeleccionada = tblAreas.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            String nombre = tblAreas.getValueAt(filaSeleccionada, 1).toString();
+            String ubicacion = tblAreas.getValueAt(filaSeleccionada, 2).toString();
+
+            txtNombre.setText(nombre);
+            txtUbicación.setText(ubicacion);    
+        }
+    }//GEN-LAST:event_tblAreasMouseClicked
+
+    private void btnInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventarioActionPerformed
+    jfrmInventarioInsert inventarioFrame = new jfrmInventarioInsert(); 
+    inventarioFrame.setVisible(true); 
+    this.dispose();
+    }//GEN-LAST:event_btnInventarioActionPerformed
 
     private void cargarAreas() {
         Conexion conexion = new Conexion();
@@ -361,6 +404,7 @@ public class jfrmAreas extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDeleteArea;
     private javax.swing.JButton btnInsertArea;
+    private javax.swing.JButton btnInventario;
     private javax.swing.JButton btnUpdateArea;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
