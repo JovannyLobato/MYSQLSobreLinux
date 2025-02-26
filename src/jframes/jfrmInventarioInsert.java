@@ -113,14 +113,14 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnDeleteArea))
                     .addComponent(jLabel1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnInsertArea)
                     .addComponent(btnUpdateArea)
@@ -307,7 +307,7 @@ public class jfrmInventarioInsert extends javax.swing.JFrame {
             javax.swing.JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
         
-        cargarInventarios(),
+        cargarInventarios();
     }//GEN-LAST:event_btnInsertAreaActionPerformed
 
     private void btnDeleteAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteAreaActionPerformed
